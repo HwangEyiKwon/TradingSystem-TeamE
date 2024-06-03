@@ -4,14 +4,15 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 
-// #include "../Project2/~~~.cpp"
-// #include "../Project2/~~~.cpp"
+#include "../Project2/AutoTradingSystem.cpp"
+#include "../Project2/StockBrockerDriverInterface.h"
 
 using namespace testing;
 using namespace std;
 
 class MockDriver : public StockBrockerDriverInterface
 {
+public:
 	MOCK_METHOD(bool, login, (string str1, string str2), (override));
 	MOCK_METHOD(bool, buy, (string stockCode, int amount, int price), (override));
 	MOCK_METHOD(bool, sell, (string stockCode, int amount, int price), (override));
@@ -29,17 +30,43 @@ public:
 TEST_F(TradingSystemFixture, LoginExceptionTest00) {
 	string id = ""; // 빈 id
 	string pwd = "pwdpwd";
-	EXPECT_THROW(tradingSystem.login(id, pwd), exception);
+	
+	try {
+		tradingSystem.login(id, pwd);
+		FAIL();
+	}
+	catch (exception& e) {
+		cout << "Exception occurs: " << e.what() << endl;
+	}
 }
 TEST_F(TradingSystemFixture, LoginExceptionTest01) {
 	string id = "hwang.id";
 	string pwd = ""; // 빈 pwd
-	EXPECT_THROW(tradingSystem.login(id, pwd), exception);
+
+	try {
+		tradingSystem.login(id, pwd);
+		FAIL();
+	}
+	catch (exception& e) {
+		cout << "Exception occurs: " << e.what() << endl;
+	}
 }
 TEST_F(TradingSystemFixture, LoginNormalTest) {
 	string id = "hwang.id";
 	string pwd = "pwdpwd";
+
+	EXPECT_CALL(mockDriver, login)
+		.Times(1)
+		.WillRepeatedly(Return(true));
 	EXPECT_TRUE(tradingSystem.login(id, pwd));
+}
+TEST_F(TradingSystemFixture, LoginFailTest) {
+	string id = "hwang.id";
+	string pwd = "pwdpwd";
+	EXPECT_CALL(mockDriver, login)
+		.Times(1)
+		.WillRepeatedly(Return(false));
+	EXPECT_FALSE(tradingSystem.login(id, pwd));
 }
 
 // buy
@@ -192,7 +219,6 @@ TEST_F(TradingSystemFixture, buyNiceTimingTest)
 
 	tradingSystem.buyNiceTiming(stockCode, price);
 }
-
 
 // sellNiceTiming
 TEST_F(TradingSystemFixture, sellNiceTimingTest)
