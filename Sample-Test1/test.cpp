@@ -4,8 +4,7 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 
-// #include "../Project2/~~~.cpp"
-// #include "../Project2/~~~.cpp"
+ #include "../Project2/AutoTradingSystem.cpp"
 
 using namespace testing;
 using namespace std;
