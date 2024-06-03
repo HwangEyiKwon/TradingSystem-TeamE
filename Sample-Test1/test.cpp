@@ -30,16 +30,31 @@ public:
 TEST_F(TradingSystemFixture, LoginExceptionTest00) {
 	string id = ""; // 빈 id
 	string pwd = "pwdpwd";
-	EXPECT_THROW(tradingSystem.login(id, pwd), exception);
+	
+	try {
+		tradingSystem.login(id, pwd);
+		FAIL();
+	}
+	catch (exception& e) {
+		cout << "Exception occurs: " << e.what() << endl;
+	}
 }
 TEST_F(TradingSystemFixture, LoginExceptionTest01) {
 	string id = "hwang.id";
 	string pwd = ""; // 빈 pwd
-	EXPECT_THROW(tradingSystem.login(id, pwd), exception);
+
+	try {
+		tradingSystem.login(id, pwd);
+		FAIL();
+	}
+	catch (exception& e) {
+		cout << "Exception occurs: " << e.what() << endl;
+	}
 }
 TEST_F(TradingSystemFixture, LoginNormalTest) {
 	string id = "hwang.id";
 	string pwd = "pwdpwd";
+
 	EXPECT_CALL(mockDriver, login)
 		.Times(1)
 		.WillRepeatedly(Return(true));
