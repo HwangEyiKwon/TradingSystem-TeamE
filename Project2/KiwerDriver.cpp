@@ -11,6 +11,9 @@ public:
 
 	bool login(string str1, string str2) {}
 	bool buy(string stockCode, int amount, int price) {
+		if (IsValidOrder(stockCode, amount, price) == false)
+			return false;
+
 		_kiwerApi.buy(stockCode, amount, price);
 
 		return true;
