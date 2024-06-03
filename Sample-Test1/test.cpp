@@ -69,7 +69,6 @@ TEST_F(TradingSystemFixture, LoginFailTest) {
 	EXPECT_FALSE(tradingSystem.login(id, pwd));
 }
 
-#if false
 // buy
 TEST_F(TradingSystemFixture, buyExceptionTest00) {
 	string stockCode = "SAMSUNG";
@@ -111,7 +110,6 @@ TEST_F(TradingSystemFixture, buyExceptionTest03) {
 
 	EXPECT_THROW(tradingSystem.buy(stockCode, amount, price), exception);
 }
-
 TEST_F(TradingSystemFixture, buyNormalTest) {
 	string id = "hwang.id";
 	string pwd = "pwdpwd";
@@ -123,7 +121,6 @@ TEST_F(TradingSystemFixture, buyNormalTest) {
 
 	EXPECT_TRUE(tradingSystem.buy(stockCode, amount, price));
 }
-
 
 // sell
 TEST_F(TradingSystemFixture, sellExceptionTest00) {
@@ -191,4 +188,49 @@ TEST_F(TradingSystemFixture, getCurrentPriceTest) {
 
 	EXPECT_THAT(tradingSystem.getCurrentPrice(stockCode), Eq(expectedPrice));
 }
-#endif
+
+// selectStockBrocker
+TEST_F(TradingSystemFixture, selectStockBrockerTest00)
+{
+	KiwerDriver kiwerDriver;
+	string selectBrockerName = "Kiwer";
+	tradingSystem.selectStockBrocker(selectBrockerName, &kiwerDriver);
+	EXPECT_THAT(tradingSystem.getCurrentStockBrockerName(), Eq("Kiwer"));
+}
+TEST_F(TradingSystemFixture, selectStockBrockerTest01)
+{
+	NemoDriver nemoDriver;
+	string selectBrockerName = "Nemo";
+	tradingSystem.selectStockBrocker(selectBrockerName, &nemoDriver);
+	EXPECT_THAT(tradingSystem.getCurrentStockBrockerName(), Eq("Nemo"));
+}
+
+// buyNiceTiming
+TEST_F(TradingSystemFixture, buyNiceTimingTest)
+{
+	string stockCode = "SAMSUNG";
+	int price = 75000;
+
+	EXPECT_CALL(mockDriver, getCurrentPrice(stockCode)).Times(3)
+														.WillOnce(Return(50000))
+														.WillOnce(Return(65000))
+														.WillOnce(Return(75000))
+														.WillRepeatedly(Return(77000));
+
+	tradingSystem.buyNiceTiming(stockCode, price);
+}
+
+// sellNiceTiming
+TEST_F(TradingSystemFixture, sellNiceTimingTest)
+{
+	string stockCode = "SAMSUNG";
+	int price = 50000;
+
+	EXPECT_CALL(mockDriver, getCurrentPrice(stockCode)).Times(3)
+														.WillOnce(Return(75000))
+														.WillOnce(Return(65000))
+														.WillOnce(Return(50000))
+														.WillRepeatedly(Return(45000));
+
+	tradingSystem.sellNiceTiming(stockCode, price);
+}
