@@ -43,8 +43,15 @@ TEST_F(TradingSystemFixture, LoginNormalTest) {
 	EXPECT_CALL(mockDriver, login)
 		.Times(1)
 		.WillRepeatedly(Return(true));
-
 	EXPECT_TRUE(tradingSystem.login(id, pwd));
+}
+TEST_F(TradingSystemFixture, LoginFailTest) {
+	string id = "hwang.id";
+	string pwd = "pwdpwd";
+	EXPECT_CALL(mockDriver, login)
+		.Times(1)
+		.WillRepeatedly(Return(false));
+	EXPECT_FALSE(tradingSystem.login(id, pwd));
 }
 
 #if false
