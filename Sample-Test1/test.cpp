@@ -12,6 +12,7 @@ using namespace std;
 
 class MockDriver : public StockBrockerDriverInterface
 {
+public:
 	MOCK_METHOD(bool, login, (string str1, string str2), (override));
 	MOCK_METHOD(bool, buy, (string stockCode, int amount, int price), (override));
 	MOCK_METHOD(bool, sell, (string stockCode, int amount, int price), (override));
@@ -39,6 +40,10 @@ TEST_F(TradingSystemFixture, LoginExceptionTest01) {
 TEST_F(TradingSystemFixture, LoginNormalTest) {
 	string id = "hwang.id";
 	string pwd = "pwdpwd";
+	EXPECT_CALL(mockDriver, login)
+		.Times(1)
+		.WillRepeatedly(Return(true));
+
 	EXPECT_TRUE(tradingSystem.login(id, pwd));
 }
 
